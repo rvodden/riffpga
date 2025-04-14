@@ -1,3 +1,17 @@
+# == DO NOT EDIT THE FOLLOWING LINES for the Raspberry Pi Pico VS Code Extension to work ==
+if(WIN32)
+    set(USERHOME $ENV{USERPROFILE})
+else()
+    set(USERHOME $ENV{HOME})
+endif()
+set(sdkVersion 2.1.1)
+set(toolchainVersion 14_2_Rel1)
+set(picotoolVersion 2.1.1)
+set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
+if (EXISTS ${picoVscode})
+    include(${picoVscode})
+endif()
+# ====================================================================================
 cmake_minimum_required(VERSION 3.17)
 
 # To build:
@@ -38,10 +52,12 @@ set(TOP ${PICO_TINYUSB_PATH})
 
 
 set(PICO_BOARD_HEADER_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/boards)
-set(PICO_BOARD riffpga CACHE STRING "Board type")
+set(PICO_BOARD pico2_w CACHE STRING "Board type")
 
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include("${PICO_SDK_PATH}/external/pico_sdk_import.cmake")
+set(PICO_EXTRAS_FETCH_FROM_GIT TRUE)
+include("${CMAKE_SOURCE_DIR}/pico_extras_import.cmake")
 
 if (PICO_SDK_VERSION_STRING VERSION_LESS "1.4.0")
   message(FATAL_ERROR "Raspberry Pi Pico SDK version 1.4.0 (or later) required. Your version is ${PICO_SDK_VERSION_STRING}")
@@ -69,8 +85,6 @@ project(${PROJNAME} C CXX ASM)
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
-
-
 add_executable(${EXENAME})
 target_include_directories(${EXENAME} PRIVATE src)
 # Example source
@@ -87,6 +101,7 @@ target_sources(${EXENAME} PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}/src/uart_bridge.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/clock_pwm.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/io_inputs.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/audio.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/sui/sui_util.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/sui/sui_command.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/sui/sui_handler.c
@@ -102,8 +117,12 @@ target_sources(${EXENAME} PUBLIC
 
 # In addition to pico_stdlib required for common PicoSDK functionality, add dependency on tinyusb_device
 # for TinyUSB device support and tinyusb_board for the additional board support library used by the example
-target_link_libraries(${EXENAME} PUBLIC pico_stdlib 
-			pico_unique_id tinyusb_device tinyusb_board 
+target_link_libraries(${EXENAME} PUBLIC 
+      pico_stdlib
+			pico_unique_id
+      pico_audio_i2s
+      tinyusb_device 
+      tinyusb_board 
 			hardware_clocks 
 			hardware_pwm
 			hardware_spi hardware_flash

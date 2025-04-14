@@ -26,6 +26,7 @@
 #include "board_config.h"
 #include "board_includes.h"
 #include "bsp/board_api.h"
+#include "pico/audio_i2s.h"
 #include "tusb.h"
 #include "cdc_interface.h"
 #include "uf2.h"
@@ -38,10 +39,12 @@
 #include "sui/sui_handler.h"
 #include "uart_bridge.h"
 #include "io_inputs.h"
+#include "audio.h"
 
 #include "driver_state.h"
 
 DriverState MainDriverState;
+audio_buffer_pool_t *audio_pool;
 
 
 // for dev emergencies, lol:
@@ -67,6 +70,7 @@ void run_tasks(void) {
 	tud_task(); // tinyusb device task
 	cdc_task();
 	led_blinking_task();
+	audio_task();
 }
 
 void setup(void) {

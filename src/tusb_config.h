@@ -96,7 +96,7 @@
 #define CFG_TUD_HID              0
 #define CFG_TUD_MIDI             0
 #define CFG_TUD_VENDOR           0
-
+#define CFG_TUD_AUDIO            1
 
 // CDC FIFO size of TX and RX
 #define CFG_TUD_CDC_RX_BUFSIZE   (TUD_OPT_HIGH_SPEED ? 512 : 64)
@@ -107,6 +107,21 @@
 
 // MSC Buffer size of Device Mass storage
 #define CFG_TUD_MSC_EP_BUFSIZE   512
+
+// AUDIO configuration
+#define CFG_TUD_AUDIO 1
+#define CFG_TUD_AUDIO_ENABLE_EP_OUT 1
+#define CFG_TUD_AUDIO_FUNC_1_EP_OUT_SZ_MAX 192
+#define CFG_TUD_AUDIO_FUNC_1_EP_OUT_SW_BUF_SZ 192
+
+#define CFG_TUD_AUDIO_FUNC_1_N_AS_INT 1
+#define CFG_TUD_AUDIO_FUNC_1_N_CHANNELS_TX 2
+#define CFG_TUD_AUDIO_FUNC_1_N_BYTES_PER_SAMPLE_TX 2
+#define CFG_TUD_AUDIO_FUNC_1_SAMPLE_RATE 44100
+#define CFG_TUD_AUDIO_FUNC_1_DESC_LEN TUD_AUDIO_DESC_STD_AS_INT(2, 2)
+#define CFG_TUD_AUDIO_FUNC_1_CTRL_BUF_SZ 64
+#define CFG_TUD_AUDIO_FUNC_1_EP_BUF_SZ 192
+
 
 #ifdef __cplusplus
  }
